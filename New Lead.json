@@ -1,0 +1,467 @@
+{
+  "name": "New Lead",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Test Form",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "First Name"
+            },
+            {
+              "fieldLabel": "Last Name"
+            },
+            {
+              "fieldLabel": "Email"
+            },
+            {
+              "fieldLabel": "Budget",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "100-1000"
+                  },
+                  {
+                    "option": "1000+"
+                  },
+                  {
+                    "option": "0-100"
+                  }
+                ]
+              }
+            },
+            {
+              "fieldLabel": "Message"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "94346a43-bf22-4bad-bdc8-db369144c820",
+      "name": "On form submission",
+      "webhookId": "b5a8b40f-7234-4fb6-b371-44db280bae66"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1IU_zSFfumTQXE1hopw-hVnd68mDDD86WG39OofE9Fn8",
+          "mode": "list",
+          "cachedResultName": "Untitled spreadsheet",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1IU_zSFfumTQXE1hopw-hVnd68mDDD86WG39OofE9Fn8/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1IU_zSFfumTQXE1hopw-hVnd68mDDD86WG39OofE9Fn8/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "First Name": "={{ $json['First Name'] }}",
+            "Last Name": "={{ $json['Last Name'] }}",
+            "Email": "={{ $json.Email }}",
+            "Message": "={{ $json.Message }}",
+            "Budget": "={{ $json.Budget }}",
+            "Date": "={{ $now }}",
+            "Rejected": "={{ $if($json.Budget === \"1,000+\", \"FALSE\", \"TRUE\") }}"
+          },
+          "matchingColumns": [
+            "Email"
+          ],
+          "schema": [
+            {
+              "id": "First Name",
+              "displayName": "First Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Last Name",
+              "displayName": "Last Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Budget",
+              "displayName": "Budget",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Message",
+              "displayName": "Message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Rejected",
+              "displayName": "Rejected",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        208,
+        0
+      ],
+      "id": "944774cd-298d-4da8-b8a6-b148a2e51be7",
+      "name": "Append or update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "eCfWaOwDcOE7Z9q1",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "96fc97d7-3331-4d24-822b-79b1d9447cbf",
+              "leftValue": "={{ $json.Budget }}",
+              "rightValue": "0-100",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        416,
+        0
+      ],
+      "id": "165da915-d984-44d0-b57d-aa23235e8a9f",
+      "name": "Filter"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('On form submission').item.json.Budget }}",
+                    "rightValue": "100-1000",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "2dc6cd6d-a279-4ec8-b14d-877cca4f0fd5"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "b8fdf0ff-6dff-427d-afde-768e078aa09b",
+                    "leftValue": "={{ $('On form submission').item.json.Budget }}",
+                    "rightValue": "1,000+",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        624,
+        0
+      ],
+      "id": "eccbb34c-abe1-4c8f-b099-63d98c6fdb1e",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('On form submission').item.json.Email }}",
+        "subject": "Hey, Thanks for inquiring",
+        "emailType": "text",
+        "message": "=Hey  {{ $('On form submission').item.json['First Name'] }}\n\nThanks for inquiring with our services, i'll give you a call later this week\n\nBest,\nAli",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        832,
+        -96
+      ],
+      "id": "9b1ec46e-e4fb-4481-8427-3003459e5366",
+      "name": "Send a message",
+      "webhookId": "ca574acc-0dc2-4ac0-9875-e02ed87d78a6",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "FutihcALY4V7VuYj",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('On form submission').item.json.Email }}",
+        "subject": "Hey, Thanks for inquiring",
+        "emailType": "text",
+        "message": "=Hey  {{ $('On form submission').item.json['First Name'] }}\n\nThanks for inquiring with our services, can you book a call on my calender link here:\n\nhttps://company.com/booking\n\nBest,\nAli",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        832,
+        112
+      ],
+      "id": "7e69d12a-cd02-46f4-a9f7-a7eedba0c125",
+      "name": "Send a message1",
+      "webhookId": "ca574acc-0dc2-4ac0-9875-e02ed87d78a6",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "FutihcALY4V7VuYj",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1088,
+        -16
+      ],
+      "id": "37ead046-afd0-4426-832e-c534f7593730",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('On form submission').item.json.Email }}",
+        "subject": "New Lead",
+        "emailType": "text",
+        "message": "=New Lead\nName: {{ $('On form submission').item.json['First Name'] }} {{ $('On form submission').item.json['Last Name'] }}\nEmail: {{ $('On form submission').item.json.Email }}\nBudget: {{ $('On form submission').item.json.Budget }}\nMessage: {{ $('On form submission').item.json.Message }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1376,
+        -16
+      ],
+      "id": "3530d69e-08b7-4201-adb4-e76be9e13b2b",
+      "name": "Send a message2",
+      "webhookId": "ca574acc-0dc2-4ac0-9875-e02ed87d78a6",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "FutihcALY4V7VuYj",
+          "name": "Gmail account 2"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "On form submission": [
+      {
+        "json": {
+          "First Name": "Ali",
+          "Last Name": "Khaled",
+          "Email": "alikhalid592@gmail.com",
+          "Budget": "1,000+",
+          "Message": "this is a test",
+          "submittedAt": "2025-08-17T22:34:11.721+03:00",
+          "formMode": "test"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append or update row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Send a message2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "480ac277-b50e-4699-96c1-a1a1426bf511",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "55100e847b5d743318ef329716cbac57425d26cfd444fd5eff8f5f95cf112935"
+  },
+  "id": "cIlFrpMBo66YKgpl",
+  "tags": []
+}
